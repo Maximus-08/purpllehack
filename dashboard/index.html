@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Purplle Store Intelligence - Live Dashboard</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="app-container">
+        <header class="app-header">
+            <div class="logo-container">
+                <span class="pulse-indicator"></span>
+                <h1>Purplle Store Intelligence</h1>
+                <span class="badge live">LIVE</span>
+            </div>
+            <div class="status-container">
+                <span id="connection-status" class="status-dot connected"></span>
+                <span id="connection-text">Connected</span>
+            </div>
+        </header>
+
+        <main class="dashboard-grid">
+            <!-- Metrics Row -->
+            <section class="card metrics-card">
+                <div class="metric-item">
+                    <span class="metric-label">Unique Visitors</span>
+                    <span id="metric-visitors" class="metric-value">0</span>
+                </div>
+                <div class="metric-item">
+                    <span class="metric-label">Conversion Rate</span>
+                    <span id="metric-conversion" class="metric-value">0.0%</span>
+                </div>
+                <div class="metric-item">
+                    <span class="metric-label">Queue Depth</span>
+                    <span id="metric-queue" class="metric-value">0</span>
+                </div>
+                <div class="metric-item">
+                    <span class="metric-label">Abandonment Rate</span>
+                    <span id="metric-abandonment" class="metric-value">0.0%</span>
+                </div>
+            </section>
+
+            <!-- Main Panels -->
+            <div class="panels-container">
+                <!-- Funnel Stage -->
+                <section class="card panel funnel-panel">
+                    <h2>Conversion Funnel</h2>
+                    <div id="funnel-container" class="funnel-visual">
+                        <!-- Filled by JS -->
+                        <div class="funnel-stage-placeholder">Loading funnel data...</div>
+                    </div>
+                </section>
+
+                <!-- Heatmap Stage -->
+                <section class="card panel heatmap-panel">
+                    <h2>Zone Heatmap</h2>
+                    <div id="heatmap-container" class="heatmap-grid">
+                        <!-- Filled by JS -->
+                        <div class="heatmap-placeholder">Loading zone heatmap...</div>
+                    </div>
+                </section>
+            </div>
+
+            <!-- Alerts Panel -->
+            <section class="card panel anomalies-panel">
+                <h2>Active Anomalies</h2>
+                <div id="anomalies-container" class="anomalies-list">
+                    <div class="anomaly-placeholder">No active anomalies detected.</div>
+                </div>
+            </section>
+        </main>
+    </div>
+    <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,16 @@
+{
+  "store_id": "STORE_BLR_002",
+  "source_store_id": "ST1008",
+  "store_name": "Brigade_Bangalore",
+  "city": "Bangalore",
+  "timezone": "Asia/Kolkata",
+  "business_date": "2026-04-10",
+  "cameras": {
+    "CAM_1": { "name": "Main Floor Skincare & Central Shelves" },
+    "CAM_2": { "name": "Makeup Wall & Browsing Area" },
+    "CAM_3": { "name": "Entrance & Exit Threshold" },
+    "CAM_4": { "name": "Side Room / PMU Area" },
+    "CAM_5": { "name": "Billing & Cash Counter" }
+  },
+  "zones": {}
+}

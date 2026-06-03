@@ -1,0 +1,37 @@
+# Virtual environment
+.venv/
+venv/
+ENV/
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Datasets and Media (do not include dataset or video files in repository)
+CCTV Footage/
+*.csv
+*.xlsx
+*.png
+*.jpg
+*.jpeg
+
+# Databases
+*.db
+*.sqlite
+
+# IDE and environment files
+.env
+.env.*
+.vscode/
+.idea/
+.DS_Store
+
+# Agent specific folders
+.agents/
+.codex/
+
+# Evaluation and problem statement documents
+Assessment  Evaluation Framework.md
+Purplle_Tech_Challenge_ Round2.md

@@ -1,0 +1,19 @@
+version: '3.8'
+
+services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    volumes:
+      - store_data:/app/data
+    environment:
+      - STORE_ID=STORE_BLR_002
+      - DATABASE_URL=sqlite:////app/data/store_intelligence.db
+      - ENV=production
+    restart: unless-stopped
+
+volumes:
+  store_data:
