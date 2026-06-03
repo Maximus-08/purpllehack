@@ -32,6 +32,8 @@ CCTV Footage/
 .agents/
 .codex/
 
-# Evaluation and problem statement documents
+# Evaluation, implementation plan, and problem statement documents
 Assessment  Evaluation Framework.md
 Purplle_Tech_Challenge_ Round2.md
+IMPLEMENTATION_PLAN.md
+implementation_plan.md
