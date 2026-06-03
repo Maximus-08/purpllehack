@@ -5,12 +5,144 @@
   "city": "Bangalore",
   "timezone": "Asia/Kolkata",
   "business_date": "2026-04-10",
+  "open_hours_local": "10:00-22:00",
   "cameras": {
-    "CAM_1": { "name": "Main Floor Skincare & Central Shelves" },
-    "CAM_2": { "name": "Makeup Wall & Browsing Area" },
-    "CAM_3": { "name": "Entrance & Exit Threshold" },
-    "CAM_4": { "name": "Side Room / PMU Area" },
-    "CAM_5": { "name": "Billing & Cash Counter" }
+    "CAM_1": {
+      "camera_id": "CAM_1",
+      "name": "Main Floor Skincare & Central Shelves",
+      "file_path": "CCTV Footage/CCTV Footage/CAM 1.mp4",
+      "fps": 29.97002997002997,
+      "duration_seconds": 139.9065,
+      "clip_start_at_local": "2026-04-10T16:53:30+05:30",
+      "clip_start_at_utc": "2026-04-10T11:23:30Z",
+      "timestamp_source": "demo_assumption"
+    },
+    "CAM_2": {
+      "camera_id": "CAM_2",
+      "name": "Makeup Wall & Browsing Area",
+      "file_path": "CCTV Footage/CCTV Footage/CAM 2.mp4",
+      "fps": 29.97002997002997,
+      "duration_seconds": 125.9258,
+      "clip_start_at_local": "2026-04-10T16:53:30+05:30",
+      "clip_start_at_utc": "2026-04-10T11:23:30Z",
+      "timestamp_source": "demo_assumption"
+    },
+    "CAM_3": {
+      "camera_id": "CAM_3",
+      "name": "Entrance & Exit Threshold",
+      "file_path": "CCTV Footage/CCTV Footage/CAM 3.mp4",
+      "fps": 29.97002997002997,
+      "duration_seconds": 147.9812,
+      "clip_start_at_local": "2026-04-10T16:53:30+05:30",
+      "clip_start_at_utc": "2026-04-10T11:23:30Z",
+      "timestamp_source": "demo_assumption"
+    },
+    "CAM_4": {
+      "camera_id": "CAM_4",
+      "name": "Side Room / PMU Area",
+      "file_path": "CCTV Footage/CCTV Footage/CAM 4.mp4",
+      "fps": 24.98150532920514,
+      "duration_seconds": 145.9880,
+      "clip_start_at_local": "2026-04-10T16:53:30+05:30",
+      "clip_start_at_utc": "2026-04-10T11:23:30Z",
+      "timestamp_source": "demo_assumption"
+    },
+    "CAM_5": {
+      "camera_id": "CAM_5",
+      "name": "Billing & Cash Counter",
+      "file_path": "CCTV Footage/CCTV Footage/CAM 5.mp4",
+      "fps": 24.98143515280852,
+      "duration_seconds": 138.7030,
+      "clip_start_at_local": "2026-04-10T16:53:30+05:30",
+      "clip_start_at_utc": "2026-04-10T11:23:30Z",
+      "timestamp_source": "demo_assumption"
+    }
   },
-  "zones": {}
+  "zones": {
+    "ENTRY_THRESHOLD": {
+      "zone_id": "ENTRY_THRESHOLD",
+      "name": "Entrance & Exit Threshold",
+      "zone_type": "entry",
+      "camera_ids": ["CAM_3"],
+      "floorplan_polygon_norm": [[0.4, 0.9], [0.6, 0.9], [0.6, 1.0], [0.4, 1.0]],
+      "camera_polygons": {
+        "CAM_3": [[0.0, 0.4], [1.0, 0.4], [1.0, 0.6], [0.0, 0.6]]
+      }
+    },
+    "BILLING_COUNTER": {
+      "zone_id": "BILLING_COUNTER",
+      "name": "Billing Area & Cash Counter",
+      "zone_type": "billing",
+      "camera_ids": ["CAM_5"],
+      "floorplan_polygon_norm": [[0.8, 0.1], [0.95, 0.1], [0.95, 0.3], [0.8, 0.3]],
+      "camera_polygons": {
+        "CAM_5": [[0.2, 0.2], [0.8, 0.2], [0.8, 0.8], [0.2, 0.8]]
+      }
+    },
+    "PMU": {
+      "zone_id": "PMU",
+      "name": "Side Room / PMU Area",
+      "zone_type": "service",
+      "camera_ids": ["CAM_4"],
+      "floorplan_polygon_norm": [[0.1, 0.1], [0.3, 0.1], [0.3, 0.4], [0.1, 0.4]],
+      "camera_polygons": {
+        "CAM_4": [[0.1, 0.1], [0.9, 0.1], [0.9, 0.9], [0.1, 0.9]]
+      }
+    },
+    "MAKEUP_WALL": {
+      "zone_id": "MAKEUP_WALL",
+      "name": "Makeup Wall",
+      "zone_type": "product",
+      "camera_ids": ["CAM_2"],
+      "floorplan_polygon_norm": [[0.1, 0.5], [0.3, 0.5], [0.3, 0.9], [0.1, 0.9]],
+      "camera_polygons": {
+        "CAM_2": [[0.1, 0.1], [0.5, 0.1], [0.5, 0.9], [0.1, 0.9]]
+      },
+      "sku_zone": "LIPSTICK"
+    },
+    "ACCESSORIES": {
+      "zone_id": "ACCESSORIES",
+      "name": "Accessories Display",
+      "zone_type": "product",
+      "camera_ids": ["CAM_2"],
+      "floorplan_polygon_norm": [[0.3, 0.5], [0.5, 0.5], [0.5, 0.9], [0.3, 0.9]],
+      "camera_polygons": {
+        "CAM_2": [[0.5, 0.1], [0.9, 0.1], [0.9, 0.9], [0.5, 0.9]]
+      },
+      "sku_zone": "HAIR_CLIP"
+    },
+    "SKINCARE_WALL": {
+      "zone_id": "SKINCARE_WALL",
+      "name": "Skincare Wall",
+      "zone_type": "product",
+      "camera_ids": ["CAM_1"],
+      "floorplan_polygon_norm": [[0.5, 0.1], [0.7, 0.1], [0.7, 0.5], [0.5, 0.5]],
+      "camera_polygons": {
+        "CAM_1": [[0.05, 0.1], [0.4, 0.1], [0.4, 0.9], [0.05, 0.9]]
+      },
+      "sku_zone": "MOISTURISER"
+    },
+    "CENTER_MAKEUP_UNIT": {
+      "zone_id": "CENTER_MAKEUP_UNIT",
+      "name": "Central Makeup Island",
+      "zone_type": "product",
+      "camera_ids": ["CAM_1"],
+      "floorplan_polygon_norm": [[0.7, 0.5], [0.9, 0.5], [0.9, 0.9], [0.7, 0.9]],
+      "camera_polygons": {
+        "CAM_1": [[0.4, 0.2], [0.7, 0.2], [0.7, 0.8], [0.4, 0.8]]
+      },
+      "sku_zone": "FOUNDATION"
+    },
+    "LOWER_BRAND_WALL": {
+      "zone_id": "LOWER_BRAND_WALL",
+      "name": "Lower Brand Wall",
+      "zone_type": "product",
+      "camera_ids": ["CAM_1"],
+      "floorplan_polygon_norm": [[0.7, 0.1], [0.8, 0.1], [0.8, 0.4], [0.7, 0.4]],
+      "camera_polygons": {
+        "CAM_1": [[0.7, 0.1], [0.95, 0.1], [0.95, 0.9], [0.7, 0.9]]
+      },
+      "sku_zone": "EYELINER"
+    }
+  }
 }
