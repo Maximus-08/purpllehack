@@ -4,11 +4,18 @@ from pydantic import ValidationError
 from typing import Optional
 import json
 import os
+import time
+import uuid
 from datetime import datetime, timezone
 
 from app.models import EventModel
 from app.database import init_db, get_db_connection, check_db_health
 from app.pos import load_and_normalize_pos
+from app.metrics import get_store_metrics
+from app.funnel import get_store_funnel
+from app.heatmap import get_store_heatmap
+from app.anomalies import get_store_anomalies
+from app.logging_config import setup_logging, log_request
 
 app = FastAPI(title="Store Intelligence API")
 
@@ -18,8 +25,41 @@ dashboard_dir = os.path.join(os.path.dirname(__file__), "../dashboard")
 if os.path.exists(dashboard_dir):
     app.mount("/dashboard", StaticFiles(directory=dashboard_dir, html=True), name="dashboard")
 
+@app.middleware("http")
+async def logging_middleware(request: Request, call_next):
+    start_time = time.time()
+    trace_id = request.headers.get("X-Trace-Id", str(uuid.uuid4()))
+    
+    # Try to extract store_id from request path
+    store_id = None
+    path_parts = request.url.path.split("/")
+    if "stores" in path_parts:
+        idx = path_parts.index("stores")
+        if idx + 1 < len(path_parts):
+            store_id = path_parts[idx + 1]
+            
+    response = await call_next(request)
+    
+    latency_ms = (time.time() - start_time) * 1000.0
+    response.headers["X-Trace-Id"] = trace_id
+    
+    event_count = getattr(request.state, "event_count", None)
+    
+    log_request(
+        trace_id=trace_id,
+        endpoint=request.url.path,
+        status_code=response.status_code,
+        latency_ms=latency_ms,
+        store_id=store_id,
+        event_count=event_count
+    )
+    return response
+
 @app.on_event("startup")
 def startup_event():
+    # 0. Setup logger
+    setup_logging()
+    
     # 1. Initialize Database Tables
     init_db()
     
@@ -104,6 +144,8 @@ async def ingest_events(request: Request):
     if len(raw_events) > 500:
         raise HTTPException(status_code=400, detail="Batch size exceeds maximum limit of 500 events")
 
+    request.state.event_count = len(raw_events)
+
     accepted = 0
     duplicates = 0
     rejected = 0
@@ -160,77 +202,45 @@ async def ingest_events(request: Request):
     }
 
 @app.get("/stores/{store_id}/metrics")
-def get_store_metrics(store_id: str, start: Optional[str] = None, end: Optional[str] = None):
-    conn = get_db_connection()
+def get_store_metrics_endpoint(
+    store_id: str,
+    start: Optional[str] = None,
+    end: Optional[str] = None,
+    window: Optional[str] = None
+):
     try:
-        # Get unique visitors (non-staff)
-        visitors_query = "SELECT DISTINCT visitor_id FROM events WHERE store_id = ? AND is_staff = 0"
-        params = [store_id]
-        if start:
-            visitors_query += " AND timestamp >= ?"
-            params.append(start)
-        if end:
-            visitors_query += " AND timestamp <= ?"
-            params.append(end)
-            
-        visitors = [r["visitor_id"] for r in conn.execute(visitors_query, params).fetchall()]
-        unique_visitors = len(visitors)
-        
-        # Calculate conversions
-        conversions = 0
-        if unique_visitors > 0:
-            txns_query = "SELECT timestamp FROM transactions WHERE store_id = ?"
-            txns = conn.execute(txns_query, [store_id]).fetchall()
-            
-            converted_sessions = set()
-            for visitor in visitors:
-                billing_events_query = """
-                    SELECT timestamp FROM events 
-                    WHERE store_id = ? AND visitor_id = ? AND zone_id = 'BILLING_COUNTER' AND is_staff = 0
-                """
-                billing_events = conn.execute(billing_events_query, [store_id, visitor]).fetchall()
-                
-                for be in billing_events:
-                    be_ts = datetime.fromisoformat(be["timestamp"].replace("Z", "+00:00"))
-                    for txn in txns:
-                        txn_ts = datetime.fromisoformat(txn["timestamp"].replace("Z", "+00:00"))
-                        diff_seconds = (txn_ts - be_ts).total_seconds()
-                        if 0 <= diff_seconds <= 300: # 0 to 5 minutes before txn
-                            converted_sessions.add(visitor)
-                            break
-            conversions = len(converted_sessions)
-            
-        conversion_rate = conversions / unique_visitors if unique_visitors > 0 else 0.0
-        
-        # Average dwell per zone
-        dwell_query = """
-            SELECT zone_id, avg(dwell_ms) as avg_dwell FROM events 
-            WHERE store_id = ? AND zone_id IS NOT NULL AND is_staff = 0
-            GROUP BY zone_id
-        """
-        dwells = conn.execute(dwell_query, [store_id]).fetchall()
-        avg_dwell_ms_by_zone = {r["zone_id"]: round(r["avg_dwell"], 2) for r in dwells}
-        
-        # Current Queue depth
-        queue_query = """
-            SELECT max(CAST(json_extract(metadata_json, '$.queue_depth') AS INTEGER)) as max_queue 
-            FROM events 
-            WHERE store_id = ? AND event_type = 'BILLING_QUEUE_JOIN' AND is_staff = 0
-        """
-        max_queue = conn.execute(queue_query, [store_id]).fetchone()["max_queue"]
-        current_queue_depth = max_queue if max_queue is not None else 0
-        
-        # Last event timestamp
-        last_event_ts = conn.execute("SELECT max(timestamp) FROM events WHERE store_id = ?", [store_id]).fetchone()[0]
-        
-        return {
-            "store_id": store_id,
-            "unique_visitors": unique_visitors,
-            "conversion_rate": conversion_rate,
-            "avg_dwell_ms_by_zone": avg_dwell_ms_by_zone,
-            "current_queue_depth": current_queue_depth,
-            "abandonment_rate": 0.0,
-            "last_event_timestamp": last_event_ts
-        }
-    finally:
-        conn.close()
+        return get_store_metrics(store_id, start, end, window)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/stores/{store_id}/funnel")
+def get_store_funnel_endpoint(
+    store_id: str,
+    start: Optional[str] = None,
+    end: Optional[str] = None,
+    window: Optional[str] = None
+):
+    try:
+        return get_store_funnel(store_id, start, end, window)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/stores/{store_id}/heatmap")
+def get_store_heatmap_endpoint(
+    store_id: str,
+    start: Optional[str] = None,
+    end: Optional[str] = None,
+    window: Optional[str] = None
+):
+    try:
+        return get_store_heatmap(store_id, start, end, window)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/stores/{store_id}/anomalies")
+def get_store_anomalies_endpoint(store_id: str):
+    try:
+        return get_store_anomalies(store_id)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+

@@ -33,7 +33,7 @@ def client():
         yield c
 
 @pytest.fixture(autouse=True)
-def clear_tables():
+def clear_tables(client):
     # Clear tables before each test to ensure test isolation
     from app.database import get_db_connection
     conn = get_db_connection()
@@ -44,3 +44,4 @@ def clear_tables():
     finally:
         conn.close()
     yield
+

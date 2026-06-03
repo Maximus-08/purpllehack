@@ -1,50 +1,95 @@
 # Store Intelligence System
 
-Offline store analytics system that consumes CCTV events, persists data, and processes business metrics. Currently implements Phase 2 of development.
+Offline retail analytics system that processes store CCTV footage, parses transactional records, and serves real-time performance metrics via a FastAPI service and live web dashboard.
 
 ## Setup and Installation
 
-### 1. Requirements
-Ensure Python 3.12 and SQLite are installed. Virtualenv is used for isolation.
+### Quick Start (Local Setup)
 
-### 2. Quick Start
-Initialize virtualenv and install requirements.
+Initialize the environment and launch the application in five commands:
 
 ```bash
 python3 -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
+python3 -m pytest
+uvicorn app.main:app --reload
 ```
 
-### 3. Start the API
-Run the FastAPI development server.
+---
+
+## Container Execution
+
+Launch the API service inside Docker using Docker Compose:
 
 ```bash
-uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
+docker compose up --build
 ```
 
-## Running Tests
+The API service initializes database tables and seeds store transactions from the POS CSV file during startup.
 
-Verify schema validation, ingestion logic, and metric calculations.
+---
 
-### Run unit test suite
+## Execution and Replay
+
+### 1. Run CCTV Detection Pipeline
+Processes all local CCTV footage clips. Uses YOLOv8n CPU-only person detection. Writes validated visitor tracking events to the JSONL log file:
+
+```bash
+bash pipeline/run.sh
+```
+
+*Note: Processing runs on CPU. Frame-skipping is enabled to process every fifth frame for resource efficiency.*
+
+### 2. Replay Visitor Events
+Simulates live visitor activity by posting batch event payloads to the API. Update metrics live on the dashboard:
+
+```bash
+python3 pipeline/replay.py --mode fast
+```
+
+*Replay modes supported: `fast`, `demo`, `realtime`.*
+
+---
+
+## Live Dashboard
+
+Open the live operational web interface in your browser:
+
+```text
+http://localhost:8000/dashboard/
+```
+
+Displays active unique customer visitors, conversion rate, cash counter queue depth, zone engagement heatmap cards, and system anomalies.
+
+---
+
+## Core API Endpoints
+
+### 1. Events Ingestion
+- `POST /events/ingest`: Ingests a batch of visitor events (up to 500). Enforces idempotency via event IDs. Returns partial success reports.
+
+### 2. Store Analytics
+- `GET /stores/{store_id}/metrics`: Returns unique visitors, conversion rate, queue depth, and zone dwells.
+- `GET /stores/{store_id}/funnel`: Returns session-based retail funnel conversion stages.
+- `GET /stores/{store_id}/heatmap`: Returns normalized zone engagement metrics.
+- `GET /stores/{store_id}/anomalies`: Identifies active store operation issues.
+
+### 3. Service Status
+- `GET /health`: Returns service, SQLite database WAL mode status, and ingestion warnings.
+
+---
+
+## Running Verification Tests
+
+Run the complete test suite:
+
 ```bash
 pytest --cov=app --cov-report=term-missing
 ```
 
-### Run standalone dataset assertions
+Run structural and semantic dataset assertions check:
+
 ```bash
-python tests/assertions.py
+pytest tests/assertions.py
 ```
-
-## Implemented Features
-
-### Data Layout (Phase 2)
-* `data/store_layout.json`: Contains store parameters, camera specs, and normalized polygons.
-* `data/sample_events.jsonl`: Simulated customer journeys for testing conversion and re-entry logic.
-
-### Application Underlay
-* `app/models.py`: Pydantic validation schemas.
-* `app/database.py`: SQLite WAL database tables setup.
-* `app/pos.py`: Normalized POS CSV parser grouping orders.
-* `app/main.py`: Ingest, health, and store metrics API.

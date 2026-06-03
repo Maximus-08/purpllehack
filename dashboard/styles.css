@@ -186,13 +186,96 @@ h1 {
     letter-spacing: 0.05em;
 }
 
-.funnel-visual, .heatmap-grid {
+.funnel-visual {
     min-height: 250px;
     display: flex;
-    justify-content: center;
+    flex-direction: column;
+    width: 100%;
+}
+
+.funnel-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    width: 100%;
+}
+
+.funnel-row {
+    display: grid;
+    grid-template-columns: 120px 1fr 100px;
     align-items: center;
+    gap: 1rem;
+}
+
+.funnel-label {
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--text-primary);
+}
+
+.funnel-bar-container {
+    background-color: var(--bg-primary);
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    height: 20px;
+    width: 100%;
+    overflow: hidden;
+}
+
+.funnel-bar {
+    background: var(--accent-gradient);
+    height: 100%;
+    border-radius: 3px;
+    transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.funnel-value {
+    font-size: 0.85rem;
+    font-weight: 600;
     color: var(--text-secondary);
-    font-size: 0.875rem;
+    text-align: right;
+}
+
+.heatmap-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 0.75rem;
+    width: 100%;
+    min-height: 250px;
+}
+
+.heatmap-card {
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    padding: 0.75rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    transition: all 0.3s ease;
+}
+
+.heatmap-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.zone-name {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.zone-score {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--accent);
+}
+
+.zone-metrics {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.7rem;
+    color: var(--text-secondary);
 }
 
 .anomalies-panel {
@@ -204,3 +287,89 @@ h1 {
     flex-direction: column;
     gap: 0.75rem;
 }
+
+.anomaly-placeholder {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    font-style: italic;
+}
+
+.anomaly-item {
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    padding: 0.75rem 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    background-color: var(--bg-primary);
+}
+
+.anomaly-item.critical {
+    border-left: 4px solid var(--danger);
+    background-color: #fef2f2;
+}
+
+.anomaly-item.warn {
+    border-left: 4px solid var(--warning);
+    background-color: #fffbeb;
+}
+
+.anomaly-item.info {
+    border-left: 4px solid #3b82f6;
+    background-color: #eff6ff;
+}
+
+.anomaly-header {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.anomaly-badge {
+    font-size: 0.65rem;
+    font-weight: 700;
+    padding: 0.1rem 0.35rem;
+    border-radius: 3px;
+    text-transform: uppercase;
+}
+
+.anomaly-badge.critical {
+    background-color: var(--danger);
+    color: white;
+}
+
+.anomaly-badge.warn {
+    background-color: var(--warning);
+    color: white;
+}
+
+.anomaly-badge.info {
+    background-color: #3b82f6;
+    color: white;
+}
+
+.anomaly-type {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.anomaly-time {
+    font-size: 0.7rem;
+    color: var(--text-secondary);
+    margin-left: auto;
+}
+
+.anomaly-message {
+    font-size: 0.85rem;
+    color: var(--text-primary);
+}
+
+.anomaly-action {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    border-top: 1px solid rgba(0, 0, 0, 0.05);
+    padding-top: 0.25rem;
+    margin-top: 0.25rem;
+}
+
