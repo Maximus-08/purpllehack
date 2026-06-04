@@ -93,3 +93,15 @@ Run structural and semantic dataset assertions check:
 ```bash
 pytest tests/assertions.py
 ```
+
+---
+
+## Configuration and Multi-Store Settings
+
+The system is configuration-driven:
+
+1. **Layout Polygons:** Load zones, cameras, and coordinate polygons dynamically from `data/store_layout.json`.
+2. **Dynamic Endpoints:** API queries resolve metrics dynamically using the `store_id` URL path parameter.
+3. **Database URLs:** Enforces runtime database configuration via the `DATABASE_URL` environment variable.
+4. **Store Normalization:** POS parsing maps `ST1008` transactions to `STORE_BLR_002` dynamically in `app/pos.py`.
+
