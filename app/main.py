@@ -286,6 +286,23 @@ def debug_status():
     layout_path = os.path.join(current_dir, "../data/store_layout.json")
     layout_exists = os.path.exists(layout_path)
     
+    # List files in parent dir and data dir
+    parent_dir = os.path.join(current_dir, "..")
+    parent_files = []
+    if os.path.exists(parent_dir):
+        try:
+            parent_files = os.listdir(parent_dir)
+        except Exception as e:
+            parent_files = [f"Error: {str(e)}"]
+            
+    data_dir = os.path.join(parent_dir, "data")
+    data_files = []
+    if os.path.exists(data_dir):
+        try:
+            data_files = os.listdir(data_dir)
+        except Exception as e:
+            data_files = [f"Error: {str(e)}"]
+            
     layout_zones = []
     if layout_exists:
         try:
@@ -310,6 +327,10 @@ def debug_status():
         "current_dir": current_dir,
         "layout_path_resolved": layout_path,
         "layout_exists": layout_exists,
+        "parent_dir": parent_dir,
+        "parent_files": parent_files,
+        "data_dir": data_dir,
+        "data_files": data_files,
         "layout_zones_in_file": layout_zones,
         "unique_zones_in_db": db_zones,
         "cwd": os.getcwd()
