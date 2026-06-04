@@ -1,6 +1,12 @@
 document.addEventListener("DOMContentLoaded", () => {
-    const storeId = "STORE_BLR_002";
+    const urlParams = new URLSearchParams(window.location.search);
+    const storeId = urlParams.get("store_id") || "STORE_BLR_002";
     const apiBase = ""; // relative routes are served from FastAPI
+    
+    const storeTitleEl = document.getElementById("store-title-id");
+    if (storeTitleEl) {
+        storeTitleEl.textContent = `(${storeId})`;
+    }
     
     function updateMetrics() {
         // 1. Fetch Metrics
