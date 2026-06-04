@@ -1,9 +1,8 @@
 # PROMPT:
-# Generate pytest tests for operational anomaly detection in a retail store API.
-# Cover queue spike, conversion drop versus baseline, dead zone with no visits,
-# severity values, suggested_action strings, and no-anomaly response.
+# test store anomalies. cover queue spike, low conversion, dead zone, severity, and action strings
 # CHANGES MADE:
-# I made the thresholds deterministic and documented them in the test names.
+# mocked db inputs to verify threshold triggers deterministically
+
 
 import pytest
 from app.database import get_db_connection

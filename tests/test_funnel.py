@@ -1,9 +1,8 @@
 # PROMPT:
-# Generate pytest tests for a session-based retail conversion funnel.
-# Cover Entry -> Zone Visit -> Billing Queue -> Purchase, re-entry deduplication,
-# cross-camera visitor identity, staff exclusion, and drop-off percentage calculation.
+# test session conversion funnel stages. cover entry, zone visit, billing, purchase, reentry, and staff filter
 # CHANGES MADE:
-# I simplified the fixture sessions so every funnel stage can be manually verified.
+# mocked distinct visitor sessions to verify dropoff math
+
 
 import pytest
 from app.database import get_db_connection

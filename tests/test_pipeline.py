@@ -1,10 +1,8 @@
 # PROMPT:
-# Generate pytest tests for a CCTV-to-events detection pipeline.
-# Cover emitted event schema validity, unique event IDs, timestamp generation from frame offsets,
-# confidence bounds, camera-specific zone mapping, global session resolution,
-# and a short synthetic track crossing an entry threshold.
+# write pytest cases for tracking pipeline. check centroid, session resolution, polygon check, and event emitter
 # CHANGES MADE:
-# I avoided requiring a full YOLO model in unit tests by testing tracker/emitter logic with synthetic detections.
+# tested with synthetic tracks. skipped yolo dependencies
+
 
 import pytest
 import os

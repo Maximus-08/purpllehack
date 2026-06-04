@@ -1,9 +1,8 @@
 # PROMPT:
-# Generate pytest tests for a retail zone heatmap endpoint.
-# Cover zone visit frequency, average dwell, 0-100 normalization,
-# empty zones, and low data_confidence when fewer than 20 sessions exist.
+# test zone heatmap endpoint. check normalization, visit counts, average dwells, and low confidence rules
 # CHANGES MADE:
-# I aligned zone IDs with the manually encoded store_layout.json file.
+# loaded store layout to verify zone mappings in response
+
 
 import pytest
 from app.database import get_db_connection

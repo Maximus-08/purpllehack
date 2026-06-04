@@ -42,3 +42,7 @@ implementation_plan.md
 .coverage
 .pytest_cache/
 htmlcov/
+
+# YOLO Model Weights
+*.pt
+

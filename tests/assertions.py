@@ -1,9 +1,8 @@
 # PROMPT:
-# Create an assertions suite validating 10 semantic and structural rules for retail CCTV events.
-# Cover UUID validation, uniqueness, store ID lookup, camera ID lookup, event type enums, ISO-8601 timestamps,
-# zone ID constraints, non-negative dwell times, confidence bounds, and sequential session sequencing.
+# test 10 rules. check uuid, uniq, store id, cam id, types, time format, zones, dwell, conf, and sequence
 # CHANGES MADE:
-# I aligned the validation rules with the schema specified in app/models.py and layout metadata.
+# validated local sample events jsonl against rules
+
 
 import json
 import os

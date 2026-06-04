@@ -1,9 +1,8 @@
 # PROMPT:
-# Generate pytest tests for store metrics from retail CCTV events and POS transactions.
-# Cover unique visitors, staff exclusion, zero-purchase stores, average dwell by zone,
-# billing queue depth, abandonment rate, historical default windows, and POS multi-line order aggregation.
+# test store metrics calculation. check unique visitors, conversion rate, queue depth, and staff filter
 # CHANGES MADE:
-# I replaced generic examples with Brigade Bangalore store IDs and deterministic timestamps.
+# inserted specific transactions and matching events to verify math
+
 
 import pytest
 import json
