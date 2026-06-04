@@ -275,3 +275,44 @@ def get_store_anomalies_endpoint(store_id: str):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
+@app.get("/debug/status")
+def debug_status():
+    import os
+    import json
+    from app.database import get_db_connection
+    
+    current_file = __file__
+    current_dir = os.path.dirname(current_file)
+    layout_path = os.path.join(current_dir, "../data/store_layout.json")
+    layout_exists = os.path.exists(layout_path)
+    
+    layout_zones = []
+    if layout_exists:
+        try:
+            with open(layout_path, "r") as f:
+                data = json.load(f)
+                layout_zones = list(data.get("zones", {}).keys())
+        except Exception as e:
+            layout_zones = [f"Error: {str(e)}"]
+            
+    conn = get_db_connection()
+    db_zones = []
+    try:
+        rows = conn.execute("SELECT DISTINCT zone_id FROM events").fetchall()
+        db_zones = [r["zone_id"] for r in rows]
+    except Exception as e:
+        db_zones = [f"Error: {str(e)}"]
+    finally:
+        conn.close()
+        
+    return {
+        "current_file": current_file,
+        "current_dir": current_dir,
+        "layout_path_resolved": layout_path,
+        "layout_exists": layout_exists,
+        "layout_zones_in_file": layout_zones,
+        "unique_zones_in_db": db_zones,
+        "cwd": os.getcwd()
+    }
+
+
