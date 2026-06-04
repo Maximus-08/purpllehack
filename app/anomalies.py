@@ -5,12 +5,15 @@ from typing import List
 from app.database import get_db_connection
 from app.metrics import get_store_metrics
 
-LAYOUT_PATH = os.path.join(os.path.dirname(__file__), "store_layout.json")
-
-def load_product_zones() -> dict:
-    if not os.path.exists(LAYOUT_PATH):
+def load_product_zones(store_id: str) -> dict:
+    app_dir = os.path.dirname(__file__)
+    layout_path = os.path.join(app_dir, "layouts", f"{store_id}.json")
+    if not os.path.exists(layout_path):
+        layout_path = os.path.join(app_dir, "store_layout.json")
+        
+    if not os.path.exists(layout_path):
         return {}
-    with open(LAYOUT_PATH, "r") as f:
+    with open(layout_path, "r") as f:
         data = json.load(f)
         zones = data.get("zones", {})
         # Filter product or service zones
@@ -78,7 +81,7 @@ def get_store_anomalies(store_id: str) -> List[dict]:
         recent_traffic = conn.execute(traffic_query, [store_id, start_30m, detected_at_str]).fetchone()[0] or 0
         
         if recent_traffic > 0:
-            product_zones = load_product_zones()
+            product_zones = load_product_zones(store_id)
             for zone_id, zone_meta in product_zones.items():
                 zone_visits_query = """
                     SELECT count(*) FROM events 

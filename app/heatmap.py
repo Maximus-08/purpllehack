@@ -4,12 +4,15 @@ from typing import Optional
 from app.database import get_db_connection
 from app.metrics import get_time_range
 
-LAYOUT_PATH = os.path.join(os.path.dirname(__file__), "store_layout.json")
-
-def load_zones() -> dict:
-    if not os.path.exists(LAYOUT_PATH):
+def load_zones(store_id: str) -> dict:
+    app_dir = os.path.dirname(__file__)
+    layout_path = os.path.join(app_dir, "layouts", f"{store_id}.json")
+    if not os.path.exists(layout_path):
+        layout_path = os.path.join(app_dir, "store_layout.json")
+        
+    if not os.path.exists(layout_path):
         return {}
-    with open(LAYOUT_PATH, "r") as f:
+    with open(layout_path, "r") as f:
         data = json.load(f)
         return data.get("zones", {})
 
@@ -19,7 +22,7 @@ def get_store_heatmap(store_id: str, start: Optional[str] = None, end: Optional[
         start_ts, end_ts = get_time_range(conn, store_id, start, end, window)
         
         # Load all zones from layout to ensure 0-visit zones are included
-        layout_zones = load_zones()
+        layout_zones = load_zones(store_id)
         
         # Base filters
         event_filter = "store_id = ? AND is_staff = 0"

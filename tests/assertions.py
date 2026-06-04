@@ -10,11 +10,14 @@ import re
 import uuid
 from datetime import datetime
 
-LAYOUT_PATH = os.path.join(os.path.dirname(__file__), "../app/store_layout.json")
 EVENTS_PATH = os.path.join(os.path.dirname(__file__), "../data/sample_events.jsonl")
 
-def load_layout():
-    with open(LAYOUT_PATH, "r") as f:
+def load_layout(store_id: str = "STORE_BLR_002"):
+    tests_dir = os.path.dirname(__file__)
+    layout_path = os.path.join(tests_dir, "../app/layouts", f"{store_id}.json")
+    if not os.path.exists(layout_path):
+        layout_path = os.path.join(tests_dir, "../app/store_layout.json")
+    with open(layout_path, "r") as f:
         return json.load(f)
 
 def load_events():
@@ -52,15 +55,21 @@ def test_2_event_id_uniqueness():
         seen_ids.add(eid)
 
 def test_3_store_id_validity():
-    layout = load_layout()
     events = load_events()
+    if not events:
+        return
+    store_id = events[0].get("store_id", "STORE_BLR_002")
+    layout = load_layout(store_id)
     valid_store_id = layout.get("store_id")
     for e in events:
         assert e.get("store_id") == valid_store_id, f"Invalid store_id: {e.get('store_id')}"
 
 def test_4_camera_id_validity():
-    layout = load_layout()
     events = load_events()
+    if not events:
+        return
+    store_id = events[0].get("store_id", "STORE_BLR_002")
+    layout = load_layout(store_id)
     valid_camera_ids = set(layout.get("cameras", {}).keys())
     for e in events:
         cam_id = e.get("camera_id")
@@ -103,9 +112,12 @@ def test_6_timestamp_format_and_ordering():
             assert times[i] >= times[i-1], f"Timestamps out of order for session {visitor_id}: {times[i]} < {times[i-1]}"
 
 def test_7_zone_id_rules():
-    layout = load_layout()
-    valid_zone_ids = set(layout.get("zones", {}).keys())
     events = load_events()
+    if not events:
+        return
+    store_id = events[0].get("store_id", "STORE_BLR_002")
+    layout = load_layout(store_id)
+    valid_zone_ids = set(layout.get("zones", {}).keys())
     
     for e in events:
         etype = e.get("event_type")

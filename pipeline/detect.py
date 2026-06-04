@@ -8,19 +8,25 @@ from pipeline.zones import is_in_polygon
 from pipeline.emit import emit_event
 from app.database import get_db_connection
 
-LAYOUT_PATH = os.path.join(os.path.dirname(__file__), "../app/store_layout.json")
-
-def load_layout() -> dict:
-    if not os.path.exists(LAYOUT_PATH):
+def load_layout(store_id: str) -> dict:
+    pipeline_dir = os.path.dirname(__file__)
+    layout_path = os.path.join(pipeline_dir, "../app/layouts", f"{store_id}.json")
+    if not os.path.exists(layout_path):
+        layout_path = os.path.join(pipeline_dir, "../app/store_layout.json")
+        
+    if not os.path.exists(layout_path):
         return {}
-    with open(LAYOUT_PATH, "r") as f:
+    with open(layout_path, "r") as f:
         return json.load(f)
 
-def run_detection(max_seconds: float = None):
+def run_detection(max_seconds: float = None, store_id: str = None):
+    if not store_id:
+        store_id = os.getenv("STORE_ID", "STORE_BLR_002")
+        
     # Initialize layout
-    layout = load_layout()
+    layout = load_layout(store_id)
     if not layout:
-        print("Layout file not found. Aborting.")
+        print(f"Layout file for store {store_id} not found. Aborting.")
         return
         
     store_id = layout["store_id"]
