@@ -201,6 +201,37 @@ async def ingest_events(request: Request):
         "errors": errors
     }
 
+@app.post("/transactions/ingest")
+async def ingest_transactions(request: Request):
+    body = await request.body()
+    try:
+        data = json.loads(body)
+    except json.JSONDecodeError:
+        raise HTTPException(status_code=400, detail="Invalid JSON format")
+        
+    txns = []
+    if isinstance(data, list):
+        txns = data
+    else:
+        raise HTTPException(status_code=422, detail="Request body must be a list of transactions")
+
+    conn = get_db_connection()
+    try:
+        for t in txns:
+            metadata_str = json.dumps(t.get("metadata", {})) if "metadata" in t else t.get("metadata_json")
+            conn.execute("""
+                INSERT OR IGNORE INTO transactions 
+                (transaction_id, store_id, timestamp, basket_value_inr, item_count, metadata_json)
+                VALUES (?, ?, ?, ?, ?, ?)
+            """, (
+                t["transaction_id"], t["store_id"], t["timestamp"],
+                t.get("basket_value_inr", 0.0), t.get("item_count", 0), metadata_str
+            ))
+        conn.commit()
+    finally:
+        conn.close()
+    return {"status": "ok", "ingested": len(txns)}
+
 @app.get("/stores/{store_id}/metrics")
 def get_store_metrics_endpoint(
     store_id: str,
