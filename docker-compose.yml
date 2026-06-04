@@ -6,10 +6,11 @@ services:
     ports:
       - "8000:8000"
     volumes:
-      - store_data:/app/data
+      - store_data:/app/data/db
+      - ./Brigade_Bangalore_10_April_26.csv:/app/Brigade_Bangalore_10_April_26.csv:ro
     environment:
       - STORE_ID=STORE_BLR_002
-      - DATABASE_URL=sqlite:////app/data/store_intelligence.db
+      - DATABASE_URL=sqlite:////app/data/db/store_intelligence.db
       - ENV=production
     restart: unless-stopped
 
