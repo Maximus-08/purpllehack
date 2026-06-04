@@ -10,7 +10,7 @@ import re
 import uuid
 from datetime import datetime
 
-LAYOUT_PATH = os.path.join(os.path.dirname(__file__), "../data/store_layout.json")
+LAYOUT_PATH = os.path.join(os.path.dirname(__file__), "../app/store_layout.json")
 EVENTS_PATH = os.path.join(os.path.dirname(__file__), "../data/sample_events.jsonl")
 
 def load_layout():

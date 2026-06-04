@@ -283,10 +283,16 @@ def debug_status():
     
     current_file = __file__
     current_dir = os.path.dirname(current_file)
-    layout_path = os.path.join(current_dir, "../data/store_layout.json")
+    layout_path = os.path.join(current_dir, "store_layout.json")
     layout_exists = os.path.exists(layout_path)
     
-    # List files in parent dir and data dir
+    # List files in app dir, parent dir and data dir
+    app_files = []
+    try:
+        app_files = os.listdir(current_dir)
+    except Exception as e:
+        app_files = [f"Error: {str(e)}"]
+        
     parent_dir = os.path.join(current_dir, "..")
     parent_files = []
     if os.path.exists(parent_dir):
@@ -327,6 +333,7 @@ def debug_status():
         "current_dir": current_dir,
         "layout_path_resolved": layout_path,
         "layout_exists": layout_exists,
+        "app_files": app_files,
         "parent_dir": parent_dir,
         "parent_files": parent_files,
         "data_dir": data_dir,

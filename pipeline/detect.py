@@ -8,7 +8,7 @@ from pipeline.zones import is_in_polygon
 from pipeline.emit import emit_event
 from app.database import get_db_connection
 
-LAYOUT_PATH = os.path.join(os.path.dirname(__file__), "../data/store_layout.json")
+LAYOUT_PATH = os.path.join(os.path.dirname(__file__), "../app/store_layout.json")
 
 def load_layout() -> dict:
     if not os.path.exists(LAYOUT_PATH):

@@ -5,7 +5,7 @@ from typing import List
 from app.database import get_db_connection
 from app.metrics import get_store_metrics
 
-LAYOUT_PATH = os.path.join(os.path.dirname(__file__), "../data/store_layout.json")
+LAYOUT_PATH = os.path.join(os.path.dirname(__file__), "store_layout.json")
 
 def load_product_zones() -> dict:
     if not os.path.exists(LAYOUT_PATH):
